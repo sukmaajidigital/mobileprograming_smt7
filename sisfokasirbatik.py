@@ -575,10 +575,7 @@ def halaman_utama(page: Page, username, hak_akses):
             width=300,
             options=[
                 dropdown.Option("Tunai"),
-                dropdown.Option("Transfer Bank"),
-                dropdown.Option("E-Wallet"),
-                dropdown.Option("Kartu Kredit"),
-                dropdown.Option("Kartu Debit"),
+                dropdown.Option("Transfer"),
             ]
         )
         

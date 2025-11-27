@@ -48,7 +48,7 @@ CREATE TABLE transaksi (
     tanggal_transaksi DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     total_item INT NOT NULL DEFAULT 0,
     total_bayar DECIMAL(12,2) NOT NULL DEFAULT 0,
-    metode_pembayaran ENUM('Tunai', 'Transfer Bank', 'E-Wallet', 'Kartu Kredit', 'Kartu Debit') NOT NULL,
+    metode_pembayaran ENUM('Tunai', 'Transfer') NOT NULL,
     FOREIGN KEY (id_pelanggan) REFERENCES pelanggan(id_pelanggan) ON DELETE RESTRICT ON UPDATE CASCADE,
     INDEX idx_kode_transaksi (kode_transaksi),
     INDEX idx_tanggal_transaksi (tanggal_transaksi),
@@ -97,40 +97,3 @@ INSERT INTO pelanggan (nama_pelanggan, jenis_kelamin, no_hp, email, alamat, tang
 ('Dewi Kartika', 'Perempuan', '083456789012', 'dewi.kartika@email.com', 'Jl. Ahmad Yani No. 78, Surabaya', '2025-03-10 09:45:00'),
 ('Ahmad Rifai', 'Laki-laki', '084567890123', 'ahmad.rifai@email.com', 'Jl. Diponegoro No. 23, Yogyakarta', '2025-04-05 16:20:00'),
 ('Rina Wulandari', 'Perempuan', '085678901234', 'rina.wulandari@email.com', 'Jl. Thamrin No. 56, Semarang', '2025-05-18 11:00:00');
-
--- ========================================
--- Insert Data Sample Transaksi
--- ========================================
-INSERT INTO transaksi (kode_transaksi, id_pelanggan, tanggal_transaksi, total_item, total_bayar, metode_pembayaran) VALUES
-('TRX20250601001', 1, '2025-06-01 10:30:00', 2, 625000.00, 'Transfer Bank'),
-('TRX20250605002', 2, '2025-06-05 14:45:00', 3, 750000.00, 'Tunai'),
-('TRX20250610003', 3, '2025-06-10 11:20:00', 1, 400000.00, 'E-Wallet'),
-('TRX20250615004', 4, '2025-06-15 16:00:00', 4, 950000.00, 'Kartu Kredit'),
-('TRX20250620005', 5, '2025-06-20 09:15:00', 2, 505000.00, 'Transfer Bank');
-
--- ========================================
--- Insert Data Sample Detail Transaksi
--- ========================================
-INSERT INTO detail_transaksi (id_transaksi, id_produk, kode_produk, nama_produk, jumlah_beli, harga_satuan, subtotal, diskon_item, total_item) VALUES
--- Transaksi 1
-(1, 1, 'BTK001', 'Batik Parang Solo', 1, 350000.00, 350000.00, 0.00, 350000.00),
-(1, 2, 'BTK002', 'Batik Mega Mendung', 1, 275000.00, 275000.00, 0.00, 275000.00),
-
--- Transaksi 2
-(2, 4, 'BTK004', 'Batik Sekar Jagad', 2, 150000.00, 300000.00, 0.00, 300000.00),
-(2, 5, 'BTK005', 'Batik Truntum Modern', 1, 380000.00, 380000.00, 0.00, 380000.00),
-(2, 8, 'BTK008', 'Batik Lasem Kontemporer', 1, 125000.00, 125000.00, 55000.00, 70000.00),
-
--- Transaksi 3
-(3, 6, 'BTK006', 'Batik Sogan Jogja', 1, 400000.00, 400000.00, 0.00, 400000.00),
-
--- Transaksi 4
-(4, 3, 'BTK003', 'Batik Kawung Klasik', 1, 425000.00, 425000.00, 0.00, 425000.00),
-(4, 2, 'BTK002', 'Batik Mega Mendung', 1, 275000.00, 275000.00, 0.00, 275000.00),
-(4, 4, 'BTK004', 'Batik Sekar Jagad', 1, 150000.00, 150000.00, 0.00, 150000.00),
-(4, 8, 'BTK008', 'Batik Lasem Kontemporer', 1, 125000.00, 125000.00, 25000.00, 100000.00),
-
--- Transaksi 5
-(5, 7, 'BTK007', 'Batik Pekalongan Pesisir', 1, 320000.00, 320000.00, 0.00, 320000.00),
-(5, 4, 'BTK004', 'Batik Sekar Jagad', 1, 150000.00, 150000.00, 0.00, 150000.00),
-(5, 8, 'BTK008', 'Batik Lasem Kontemporer', 1, 125000.00, 125000.00, 90000.00, 35000.00);
