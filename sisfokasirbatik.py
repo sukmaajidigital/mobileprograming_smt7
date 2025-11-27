@@ -29,6 +29,9 @@ def halaman_utama(page: Page, username, hak_akses):
     page.window.width = 400
     page.padding = 20
 
+    # 🔹 Variabel untuk menyimpan halaman sebelumnya
+    halaman_sebelumnya = {"index": 0}  # Default beranda
+
     # 🔘 Fungsi Logout
     def logout(val):
         page.clean()
@@ -64,7 +67,7 @@ def halaman_utama(page: Page, username, hak_akses):
         page.add(
             AppBar(
                 leading=Row([
-                    IconButton(icon=Icons.ARROW_BACK, tooltip="Kembali", on_click=lambda e: tampilkan_halaman(3)),
+                    IconButton(icon=Icons.ARROW_BACK, tooltip="Kembali", on_click=lambda e: tampilkan_halaman(halaman_sebelumnya["index"])),
                     Text("Kembali", style=FontWeight.BOLD, size=16)
                 ],
                 alignment=MainAxisAlignment.START,
@@ -298,7 +301,7 @@ def halaman_utama(page: Page, username, hak_akses):
         page.add(
             AppBar(
                 leading=Row([
-                    IconButton(icon=Icons.ARROW_BACK, tooltip="Kembali", on_click=lambda e: tampilkan_halaman(3)),
+                    IconButton(icon=Icons.ARROW_BACK, tooltip="Kembali", on_click=lambda e: tampilkan_halaman(halaman_sebelumnya["index"])),
                     Text("Kembali", style=FontWeight.BOLD, size=16)
                 ],
                 alignment=MainAxisAlignment.START,
@@ -1006,6 +1009,9 @@ def halaman_utama(page: Page, username, hak_akses):
     # 🧭 Fungsi Halaman
     # -------------------------------------------------
     def tampilkan_halaman(index):
+        # Simpan halaman saat ini sebagai halaman sebelumnya
+        halaman_sebelumnya["index"] = index
+        
         if index == 0:
             page.controls.clear()
             
@@ -1046,6 +1052,20 @@ def halaman_utama(page: Page, username, hak_akses):
                         Text(f"Hak Akses: {hak_akses.upper()}", size=14, color=Colors.BLUE),
                         Divider(),
                         Text("📊 Statistik", size=18, weight="bold"),
+                        # Card Pendapatan (paling atas, lebar penuh)
+                        Container(
+                            content=Column([
+                                Icon(Icons.ATTACH_MONEY, size=50, color=Colors.PURPLE),
+                                Text("Total Pendapatan", weight="bold", size=16),
+                                Text(f"Rp {total_pendapatan:,.0f}", size=22, weight="bold"),
+                            ], horizontal_alignment=CrossAxisAlignment.CENTER),
+                            bgcolor=Colors.PURPLE_100,
+                            padding=25,
+                            border_radius=15,
+                            width=360,
+                        ),
+                        Text("Klik card untuk melihat detail", size=12, color=Colors.GREY, italic=True),
+                        # 3 Card yang bisa diklik
                         Row([
                             Container(
                                 content=Column([
@@ -1056,7 +1076,9 @@ def halaman_utama(page: Page, username, hak_akses):
                                 bgcolor=Colors.BLUE_100,
                                 padding=20,
                                 border_radius=10,
-                                width=170,
+                                width=110,
+                                ink=True,
+                                on_click=lambda e: buka_kelola_produk(),
                             ),
                             Container(
                                 content=Column([
@@ -1067,10 +1089,10 @@ def halaman_utama(page: Page, username, hak_akses):
                                 bgcolor=Colors.GREEN_100,
                                 padding=20,
                                 border_radius=10,
-                                width=170,
+                                width=110,
+                                ink=True,
+                                on_click=lambda e: buka_kelola_pelanggan(),
                             ),
-                        ], alignment=MainAxisAlignment.CENTER),
-                        Row([
                             Container(
                                 content=Column([
                                     Icon(Icons.RECEIPT_LONG, size=40, color=Colors.ORANGE),
@@ -1080,23 +1102,15 @@ def halaman_utama(page: Page, username, hak_akses):
                                 bgcolor=Colors.ORANGE_100,
                                 padding=20,
                                 border_radius=10,
-                                width=170,
+                                width=110,
+                                ink=True,
+                                on_click=lambda e: halaman_laporan(),
                             ),
-                            Container(
-                                content=Column([
-                                    Icon(Icons.ATTACH_MONEY, size=40, color=Colors.PURPLE),
-                                    Text("Pendapatan", weight="bold"),
-                                    Text(f"Rp {total_pendapatan:,.0f}", size=16, weight="bold"),
-                                ], horizontal_alignment=CrossAxisAlignment.CENTER),
-                                bgcolor=Colors.PURPLE_100,
-                                padding=20,
-                                border_radius=10,
-                                width=170,
-                            ),
-                        ], alignment=MainAxisAlignment.CENTER),
+                        ], alignment=MainAxisAlignment.CENTER, spacing=10),
                     ],
                     alignment=MainAxisAlignment.CENTER,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=15,
                     ),
                     alignment=alignment.center,
                     expand=True,
