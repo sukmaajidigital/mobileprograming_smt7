@@ -11,7 +11,7 @@ def koneksi_database():
         host="localhost",
         user="root",
         password="",
-        database="mobileprograming"
+        database="db_kasir_batik"
     )
 
 # =========================================================
@@ -116,17 +116,16 @@ def halaman_utama(page: Page, username, hak_akses):
         # 🔹 Tabel data produk
         tabel_produk = DataTable(
             columns=[
-                DataColumn(Text("No.")),
+                DataColumn(Text("No."), numeric=True),
                 DataColumn(Text("Kode")),
-                DataColumn(Text("Nama Produk")),
+                DataColumn(Text("Nama")),
                 DataColumn(Text("Jenis")),
-                DataColumn(Text("Ukuran")),
+                DataColumn(Text("Ukr")),
                 DataColumn(Text("Harga")),
-                DataColumn(Text("Stok")),
+                DataColumn(Text("Stok"), numeric=True),
                 DataColumn(Text("Aksi")),
             ],
             rows=[],
-            width=800,
         )
 
         # 🔹 Fungsi tampil data produk
@@ -139,8 +138,20 @@ def halaman_utama(page: Page, username, hak_akses):
             tabel_produk.rows.clear()
             no_urut = 1
             for row in baris_tabel:
-                tombol_ubah_produk = IconButton(icon=Icons.EDIT, tooltip="Ubah", on_click=isi_form_edit, data=row)
-                tombol_hapus_produk = IconButton(icon=Icons.DELETE, tooltip="Hapus", icon_color=Colors.RED, on_click=hapus_data_produk, data=row)
+                tombol_ubah_produk = IconButton(
+                    icon=Icons.EDIT, 
+                    tooltip="Ubah", 
+                    on_click=isi_form_edit, 
+                    data=row,
+                    icon_color=Colors.BLUE
+                )
+                tombol_hapus_produk = IconButton(
+                    icon=Icons.DELETE, 
+                    tooltip="Hapus", 
+                    icon_color=Colors.RED, 
+                    on_click=hapus_data_produk, 
+                    data=row
+                )
 
                 tabel_produk.rows.append(
                     DataRow(
@@ -152,7 +163,7 @@ def halaman_utama(page: Page, username, hak_akses):
                             DataCell(Text(row["ukuran"])),
                             DataCell(Text(f"Rp {row['harga']:,.0f}")),
                             DataCell(Text(row["stok"])),
-                            DataCell(Row([tombol_ubah_produk, tombol_hapus_produk])),
+                            DataCell(Row([tombol_ubah_produk, tombol_hapus_produk], spacing=5)),
                         ]
                     )
                 )
@@ -190,16 +201,21 @@ def halaman_utama(page: Page, username, hak_akses):
                     
         # 🔹 Fungsi isi form untuk ubah data
         def isi_form_edit(val):
-            inputan_id_produk.value = val.control.data['id_produk']
-            inputan_kode_produk.value = val.control.data['kode_produk']
-            inputan_nama_produk.value = val.control.data['nama_produk']
-            inputan_jenis_batik.value = val.control.data['jenis_batik']
-            inputan_ukuran.value = val.control.data['ukuran']
-            inputan_harga.value = str(val.control.data['harga'])
-            inputan_stok.value = str(val.control.data['stok'])
-            notif_produk.value = "✏️ Mode edit aktif"
-            notif_produk.color = Colors.ORANGE
-            page.update()
+            try:
+                inputan_id_produk.value = str(val.control.data['id_produk'])
+                inputan_kode_produk.value = val.control.data['kode_produk']
+                inputan_nama_produk.value = val.control.data['nama_produk']
+                inputan_jenis_batik.value = val.control.data['jenis_batik']
+                inputan_ukuran.value = val.control.data['ukuran']
+                inputan_harga.value = str(val.control.data['harga'])
+                inputan_stok.value = str(val.control.data['stok'])
+                notif_produk.value = "✏️ Mode edit aktif"
+                notif_produk.color = Colors.ORANGE
+                page.update()
+            except Exception as ex:
+                notif_produk.value = f"❌ Error edit: {ex}"
+                notif_produk.color = Colors.RED
+                page.update()
 
         # 🔹 Fungsi update data
         def update_data_produk(val):
@@ -276,7 +292,11 @@ def halaman_utama(page: Page, username, hak_akses):
                         notif_produk,
                         Divider(),
                         Row([Text("📋 Daftar Produk", size=16, weight="bold")], width=400, alignment=MainAxisAlignment.START),
-                        Row([tabel_produk], scroll=ScrollMode.ALWAYS, width=400),
+                        Container(
+                            content=Row([tabel_produk], scroll=ScrollMode.ALWAYS),
+                            width=400,
+                            height=300,
+                        ),
                     ],
                     scroll=ScrollMode.ALWAYS,
                     alignment=MainAxisAlignment.CENTER,
@@ -336,7 +356,7 @@ def halaman_utama(page: Page, username, hak_akses):
         # 🔹 Tabel data pelanggan
         tabel_pelanggan = DataTable(
             columns=[
-                DataColumn(Text("No.")),
+                DataColumn(Text("No."), numeric=True),
                 DataColumn(Text("Nama")),
                 DataColumn(Text("JK")),
                 DataColumn(Text("No HP")),
@@ -345,7 +365,6 @@ def halaman_utama(page: Page, username, hak_akses):
                 DataColumn(Text("Aksi")),
             ],
             rows=[],
-            width=800,
         )
 
         def tampil_data_pelanggan():
@@ -357,8 +376,20 @@ def halaman_utama(page: Page, username, hak_akses):
             tabel_pelanggan.rows.clear()
             no_urut = 1
             for row in baris_tabel:
-                tombol_ubah = IconButton(icon=Icons.EDIT, tooltip="Ubah", on_click=isi_form_edit_pelanggan, data=row)
-                tombol_hapus = IconButton(icon=Icons.DELETE, tooltip="Hapus", icon_color=Colors.RED, on_click=hapus_data_pelanggan, data=row)
+                tombol_ubah = IconButton(
+                    icon=Icons.EDIT, 
+                    tooltip="Ubah", 
+                    on_click=isi_form_edit_pelanggan, 
+                    data=row,
+                    icon_color=Colors.BLUE
+                )
+                tombol_hapus = IconButton(
+                    icon=Icons.DELETE, 
+                    tooltip="Hapus", 
+                    icon_color=Colors.RED, 
+                    on_click=hapus_data_pelanggan, 
+                    data=row
+                )
 
                 tabel_pelanggan.rows.append(
                     DataRow(
@@ -369,7 +400,7 @@ def halaman_utama(page: Page, username, hak_akses):
                             DataCell(Text(row["no_hp"])),
                             DataCell(Text(row["email"] or "-")),
                             DataCell(Text(row["alamat"][:20] + "..." if len(row["alamat"]) > 20 else row["alamat"])),
-                            DataCell(Row([tombol_ubah, tombol_hapus])),
+                            DataCell(Row([tombol_ubah, tombol_hapus], spacing=5)),
                         ]
                     )
                 )
@@ -404,15 +435,20 @@ def halaman_utama(page: Page, username, hak_akses):
                     page.update()
                     
         def isi_form_edit_pelanggan(val):
-            inputan_id_pelanggan.value = val.control.data['id_pelanggan']
-            inputan_nama_pelanggan.value = val.control.data['nama_pelanggan']
-            inputan_jenis_kelamin.value = val.control.data['jenis_kelamin']
-            inputan_no_hp.value = val.control.data['no_hp']
-            inputan_email.value = val.control.data['email'] or ""
-            inputan_alamat.value = val.control.data['alamat']
-            notif_pelanggan.value = "✏️ Mode edit aktif"
-            notif_pelanggan.color = Colors.ORANGE
-            page.update()
+            try:
+                inputan_id_pelanggan.value = str(val.control.data['id_pelanggan'])
+                inputan_nama_pelanggan.value = val.control.data['nama_pelanggan']
+                inputan_jenis_kelamin.value = val.control.data['jenis_kelamin']
+                inputan_no_hp.value = val.control.data['no_hp']
+                inputan_email.value = val.control.data['email'] or ""
+                inputan_alamat.value = val.control.data['alamat']
+                notif_pelanggan.value = "✏️ Mode edit aktif"
+                notif_pelanggan.color = Colors.ORANGE
+                page.update()
+            except Exception as ex:
+                notif_pelanggan.value = f"❌ Error edit: {ex}"
+                notif_pelanggan.color = Colors.RED
+                page.update()
 
         def update_data_pelanggan(val):
             if inputan_id_pelanggan.value == "":
@@ -483,7 +519,11 @@ def halaman_utama(page: Page, username, hak_akses):
                         notif_pelanggan,
                         Divider(),
                         Row([Text("📋 Daftar Pelanggan", size=16, weight="bold")], width=400, alignment=MainAxisAlignment.START),
-                        Row([tabel_pelanggan], scroll=ScrollMode.ALWAYS, width=400),
+                        Container(
+                            content=Row([tabel_pelanggan], scroll=ScrollMode.ALWAYS),
+                            width=400,
+                            height=300,
+                        ),
                     ],
                     scroll=ScrollMode.ALWAYS,
                     alignment=MainAxisAlignment.CENTER,
