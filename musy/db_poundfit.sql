@@ -99,14 +99,3 @@ INSERT INTO kelas_poundfit (nama_kelas, hari, jam, lokasi_kelas, tarif, kapasita
 ('Poundfit Weekend Special', 'Sabtu', '08:00:00', 'Studio A - Lantai 2', 200000.00, 20, 15),
 ('Poundfit Express', 'Sabtu', '16:00:00', 'Studio C - Lantai 1', 160000.00, 20, 9),
 ('Poundfit Sunday Blast', 'Minggu', '09:00:00', 'Studio B - Lantai 3', 190000.00, 15, 7);
-
--- ========================================
--- Insert Data Sample Pendaftaran
--- ========================================
-INSERT INTO pendaftaran (id_peserta, id_kelas, nama_peserta, tanggal_daftar, metode_pembayaran, status_pembayaran, tanggal_mulai, tanggal_berakhir, status_kehadiran, kode_pendaftaran) VALUES
-(1, 1, 'Anisa Putri Maharani', '2025-01-10 09:15:00', 'Transfer', 'Lunas', '2025-01-15', '2025-02-15', 'Hadir', 'REG-20250110-001'),
-(2, 2, 'Rizky Firmansyah', '2025-01-15 10:45:00', 'E-Wallet', 'Lunas', '2025-01-20', '2025-02-20', 'Hadir', 'REG-20250115-002'),
-(3, 3, 'Diana Sari', '2025-02-01 14:30:00', 'Tunai', 'Lunas', '2025-02-05', '2025-03-05', 'Hadir', 'REG-20250201-003'),
-(4, 4, 'Eko Prasetyo', '2025-02-20 11:15:00', 'Transfer', 'Pending', '2025-02-25', '2025-03-25', 'Belum Dimulai', 'REG-20250220-004'),
-(5, 5, 'Fitri Handayani', '2025-03-05 08:45:00', 'E-Wallet', 'Lunas', '2025-03-10', '2025-04-10', 'Hadir', 'REG-20250305-005'),
-(1, 6, 'Anisa Putri Maharani', '2025-03-08 10:00:00', 'Transfer', 'Lunas', '2025-03-15', '2025-04-15', 'Hadir', 'REG-20250308-006');

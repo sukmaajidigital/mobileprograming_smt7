@@ -29,10 +29,11 @@ def halaman_utama(page: Page, username, hak_akses):
 
     page.clean()
     page.title = "💪 Sistem Informasi Poundfit"
-    page.window_width = 450
-    page.window_height = 800
-    page.padding = 0
+    page.window.width = 360
+    page.window.height = 640
+    page.padding = 20
     page.theme_mode = ThemeMode.LIGHT
+    page.scroll = ScrollMode.AUTO
 
     # Variabel navigasi
     halaman_sebelumnya = {"index": 0}
@@ -75,29 +76,29 @@ def halaman_utama(page: Page, username, hak_akses):
 
         # Input Form
         inp_id = TextField(label="ID", visible=False)
-        inp_nama = TextField(label="Nama Kelas", width=300)
+        inp_nama = TextField(label="Nama Kelas", expand=True)
         inp_hari = Dropdown(
-            label="Hari", width=300,
+            label="Hari", expand=True,
             options=[dropdown.Option(h) for h in ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']]
         )
-        inp_jam = TextField(label="Jam (HH:MM)", width=300, hint_text="18:00")
-        inp_lokasi = TextField(label="Lokasi", width=300)
-        inp_tarif = TextField(label="Tarif (Rp)", width=300, keyboard_type=KeyboardType.NUMBER)
-        inp_kapasitas = TextField(label="Kapasitas", width=300, keyboard_type=KeyboardType.NUMBER, value="20")
+        inp_jam = TextField(label="Jam (HH:MM)", expand=True, hint_text="18:00")
+        inp_lokasi = TextField(label="Lokasi", expand=True)
+        inp_tarif = TextField(label="Tarif (Rp)", expand=True, keyboard_type=KeyboardType.NUMBER)
+        inp_kapasitas = TextField(label="Kapasitas", expand=True, keyboard_type=KeyboardType.NUMBER, value="20")
         
         notif = Text("")
 
         # Tabel Kelas
         tabel_kelas = DataTable(
             columns=[
-                DataColumn(Text("Nama")),
-                DataColumn(Text("Hari/Jam")),
-                DataColumn(Text("Tarif")),
-                DataColumn(Text("Peserta")),
-                DataColumn(Text("Aksi")),
+                DataColumn(Text("Nama", size=10)),
+                DataColumn(Text("Hari", size=10)),
+                DataColumn(Text("Tarif", size=10)),
+                DataColumn(Text("Aksi", size=10)),
             ],
             rows=[],
-            column_spacing=20
+            column_spacing=5,
+            heading_row_height=35
         )
 
         def load_data_kelas():
@@ -108,14 +109,13 @@ def halaman_utama(page: Page, username, hak_akses):
             for row in data:
                 tabel_kelas.rows.append(
                     DataRow(cells=[
-                        DataCell(Text(row['nama_kelas'], size=12)),
-                        DataCell(Column([Text(row['hari'], weight="bold", size=12), Text(str(row['jam']), size=10)])),
-                        DataCell(Text(f"{row['tarif']:,.0f}", size=12)),
-                        DataCell(Text(f"{row['jumlah_peserta']}/{row['kapasitas']}", size=12)),
+                        DataCell(Text(row['nama_kelas'], size=10, overflow=TextOverflow.ELLIPSIS)),
+                        DataCell(Column([Text(row['hari'], weight="bold", size=9), Text(str(row['jam']), size=8)], spacing=2)),
+                        DataCell(Text(f"{int(row['tarif']/1000)}k", size=10)),
                         DataCell(Row([
-                            IconButton(Icons.EDIT, icon_color=Colors.BLUE, on_click=isi_form, data=row),
-                            IconButton(Icons.DELETE, icon_color=Colors.RED, on_click=hapus_data, data=row)
-                        ]))
+                            IconButton(Icons.EDIT, icon_color=Colors.BLUE, on_click=isi_form, data=row, icon_size=18),
+                            IconButton(Icons.DELETE, icon_color=Colors.RED, on_click=hapus_data, data=row, icon_size=18)
+                        ], spacing=0))
                     ])
                 )
             page.update()
@@ -208,18 +208,20 @@ def halaman_utama(page: Page, username, hak_akses):
         page.controls.clear()
         
         inp_id = TextField(visible=False)
-        inp_nama = TextField(label="Nama Lengkap", width=300)
-        inp_jk = Dropdown(label="Jenis Kelamin", width=300, options=[dropdown.Option("Laki-laki"), dropdown.Option("Perempuan")])
-        inp_hp = TextField(label="No HP", width=300, keyboard_type=KeyboardType.PHONE)
-        inp_alamat = TextField(label="Alamat", width=300)
-        inp_pekerjaan = TextField(label="Pekerjaan", width=300)
-        inp_status = Dropdown(label="Status", width=300, options=[dropdown.Option("Aktif"), dropdown.Option("Nonaktif"), dropdown.Option("Trial")], value="Trial")
+        inp_nama = TextField(label="Nama Lengkap", expand=True)
+        inp_jk = Dropdown(label="Jenis Kelamin", expand=True, options=[dropdown.Option("Laki-laki"), dropdown.Option("Perempuan")])
+        inp_hp = TextField(label="No HP", expand=True, keyboard_type=KeyboardType.PHONE)
+        inp_alamat = TextField(label="Alamat", expand=True, multiline=True, max_lines=2)
+        inp_pekerjaan = TextField(label="Pekerjaan", expand=True)
+        inp_status = Dropdown(label="Status", expand=True, options=[dropdown.Option("Aktif"), dropdown.Option("Nonaktif"), dropdown.Option("Trial")], value="Trial")
         
         notif = Text("")
         
         tabel_peserta = DataTable(
-            columns=[DataColumn(Text("Nama")), DataColumn(Text("JK")), DataColumn(Text("Status")), DataColumn(Text("Aksi"))],
-            rows=[]
+            columns=[DataColumn(Text("Nama", size=10)), DataColumn(Text("JK", size=10)), DataColumn(Text("Status", size=10)), DataColumn(Text("Aksi", size=10))],
+            rows=[],
+            column_spacing=5,
+            heading_row_height=35
         )
 
         def load_data():
@@ -228,11 +230,11 @@ def halaman_utama(page: Page, username, hak_akses):
             tabel_peserta.rows.clear()
             for row in data:
                 tabel_peserta.rows.append(DataRow(cells=[
-                    DataCell(Text(row['nama_lengkap'])),
-                    DataCell(Text("L" if row['jenis_kelamin'] == "Laki-laki" else "P")),
-                    DataCell(Text(row['status_keanggotaan'])),
-                    DataCell(Row([IconButton(Icons.EDIT, icon_color=Colors.BLUE, on_click=isi_form, data=row),
-                                  IconButton(Icons.DELETE, icon_color=Colors.RED, on_click=hapus_data, data=row)]))
+                    DataCell(Text(row['nama_lengkap'], size=10, overflow=TextOverflow.ELLIPSIS)),
+                    DataCell(Text("L" if row['jenis_kelamin'] == "Laki-laki" else "P", size=10)),
+                    DataCell(Text(row['status_keanggotaan'], size=9)),
+                    DataCell(Row([IconButton(Icons.EDIT, icon_color=Colors.BLUE, on_click=isi_form, data=row, icon_size=18),
+                                  IconButton(Icons.DELETE, icon_color=Colors.RED, on_click=hapus_data, data=row, icon_size=18)], spacing=0))
                 ]))
             page.update()
 
@@ -305,9 +307,9 @@ def halaman_utama(page: Page, username, hak_akses):
         page.controls.clear()
         
         # Dropdowns Data
-        dd_peserta = Dropdown(label="Pilih Peserta", width=350)
-        dd_kelas = Dropdown(label="Pilih Kelas", width=350)
-        dd_pembayaran = Dropdown(label="Metode Pembayaran", width=350, options=[dropdown.Option("Tunai"), dropdown.Option("Transfer"), dropdown.Option("E-Wallet")])
+        dd_peserta = Dropdown(label="Pilih Peserta", expand=True)
+        dd_kelas = Dropdown(label="Pilih Kelas", expand=True)
+        dd_pembayaran = Dropdown(label="Metode Pembayaran", expand=True, options=[dropdown.Option("Tunai"), dropdown.Option("Transfer"), dropdown.Option("E-Wallet")])
         
         txt_harga = Text("Harga: Rp 0", size=16, weight="bold")
         notif = Text("")
@@ -347,9 +349,13 @@ def halaman_utama(page: Page, username, hak_akses):
             try:
                 # Generate Kode
                 kode = f"REG{datetime.now().strftime('%d%H%M%S')}"
-                id_p = dd_peserta.value
-                id_k = dd_kelas.value
-                nama_p = dd_peserta.options[next(i for i, v in enumerate(dd_peserta.options) if v.key == id_p)].text
+                id_p = int(dd_peserta.value)
+                id_k = int(dd_kelas.value)
+                
+                # Ambil nama peserta dari database
+                perintahSQL.execute("SELECT nama_lengkap FROM peserta WHERE id_peserta=%s", (id_p,))
+                result = perintahSQL.fetchone()
+                nama_p = result['nama_lengkap'] if result else ""
                 
                 # Tanggal
                 tgl_mulai = date.today()
@@ -375,6 +381,7 @@ def halaman_utama(page: Page, username, hak_akses):
                 dd_peserta.value = None
                 dd_kelas.value = None
                 dd_pembayaran.value = None
+                txt_harga.value = "Total Tagihan: Rp 0"
                 load_dropdowns()
                 
             except Exception as ex:
@@ -393,17 +400,22 @@ def halaman_utama(page: Page, username, hak_akses):
             ),
             Container(
                 content=Column([
-                    Icon(Icons.FITNESS_CENTER, size=60, color=Colors.PINK),
-                    Text("Form Pendaftaran", size=20, weight="bold"),
+                    Icon(Icons.FITNESS_CENTER, size=50, color=Colors.PINK),
+                    Text("Form Pendaftaran", size=18, weight="bold"),
+                    Divider(),
+                    Row([
+                        ElevatedButton("👥 Kelola Peserta", on_click=lambda e: buka_kelola_peserta(), bgcolor=Colors.BLUE, color=Colors.WHITE, expand=True),
+                        ElevatedButton("🤸 Kelola Kelas", on_click=lambda e: buka_kelola_kelas(), bgcolor=Colors.GREEN, color=Colors.WHITE, expand=True),
+                    ], spacing=10),
                     Divider(),
                     dd_peserta,
                     dd_kelas,
                     txt_harga,
                     dd_pembayaran,
                     Divider(),
-                    ElevatedButton("Proses Pendaftaran", on_click=proses_daftar, bgcolor=Colors.PINK, color=Colors.WHITE, height=50, width=350),
+                    ElevatedButton("Proses Pendaftaran", on_click=proses_daftar, bgcolor=Colors.PINK, color=Colors.WHITE, height=45, expand=True),
                     notif
-                ], horizontal_alignment=CrossAxisAlignment.CENTER),
+                ], horizontal_alignment=CrossAxisAlignment.CENTER, scroll=ScrollMode.AUTO),
                 padding=20, expand=True
             ),
             menu_bottom_bar
@@ -418,12 +430,14 @@ def halaman_utama(page: Page, username, hak_akses):
         
         tabel_laporan = DataTable(
             columns=[
-                DataColumn(Text("Kode")),
-                DataColumn(Text("Nama")),
-                DataColumn(Text("Kelas")),
-                DataColumn(Text("Status")),
+                DataColumn(Text("Kode", size=10)),
+                DataColumn(Text("Nama", size=10)),
+                DataColumn(Text("Kelas", size=10)),
+                DataColumn(Text("Status", size=10)),
             ],
-            rows=[]
+            rows=[],
+            column_spacing=5,
+            heading_row_height=35
         )
 
         def load_laporan():
@@ -437,12 +451,12 @@ def halaman_utama(page: Page, username, hak_akses):
             tabel_laporan.rows.clear()
             for row in data:
                 tabel_laporan.rows.append(DataRow(cells=[
-                    DataCell(Text(row['kode_pendaftaran'], size=12)),
-                    DataCell(Text(row['nama_peserta'], size=12)),
-                    DataCell(Text(row['nama_kelas'], size=12)),
-                    DataCell(Container(content=Text(row['status_pembayaran'], size=10, color=Colors.WHITE), 
+                    DataCell(Text(row['kode_pendaftaran'], size=9, overflow=TextOverflow.ELLIPSIS)),
+                    DataCell(Text(row['nama_peserta'], size=9, overflow=TextOverflow.ELLIPSIS)),
+                    DataCell(Text(row['nama_kelas'], size=9, overflow=TextOverflow.ELLIPSIS)),
+                    DataCell(Container(content=Text(row['status_pembayaran'], size=8, color=Colors.WHITE), 
                                        bgcolor=Colors.GREEN if row['status_pembayaran']=='Lunas' else Colors.ORANGE,
-                                       padding=5, border_radius=5))
+                                       padding=3, border_radius=3))
                 ]))
             page.update()
 
@@ -479,12 +493,12 @@ def halaman_utama(page: Page, username, hak_akses):
             def card_menu(icon, title, count, func):
                 return Container(
                     content=Column([
-                        Icon(icon, size=40, color=Colors.WHITE),
-                        Text(title, color=Colors.WHITE, weight="bold"),
-                        Text(str(count), color=Colors.WHITE, size=20, weight="bold")
+                        Icon(icon, size=35, color=Colors.WHITE),
+                        Text(title, color=Colors.WHITE, weight="bold", size=12),
+                        Text(str(count), color=Colors.WHITE, size=18, weight="bold")
                     ], horizontal_alignment=CrossAxisAlignment.CENTER, alignment=MainAxisAlignment.CENTER),
-                    width=130, height=130, bgcolor=Colors.PINK_400, border_radius=15,
-                    on_click=lambda e: func(), ink=True, padding=10
+                    width=105, height=105, bgcolor=Colors.PINK_400, border_radius=12,
+                    on_click=lambda e: func(), ink=True, padding=8
                 )
 
             page.add(
@@ -496,8 +510,8 @@ def halaman_utama(page: Page, username, hak_akses):
                 ),
                 Container(
                     content=Column([
-                        Text(f"Hai, {username}!", size=22, weight="bold"),
-                        Text("Selamat datang di Dashboard Instruktur", color=Colors.GREY),
+                        Text(f"Hai, {username}!", size=18, weight="bold"),
+                        Text("Dashboard Instruktur", color=Colors.GREY, size=12),
                         Divider(),
                         Row([
                             card_menu(Icons.CLASS_, "Kelas", tot_kelas, buka_kelola_kelas),
@@ -539,12 +553,14 @@ def halaman_utama(page: Page, username, hak_akses):
 # =========================================================
 def halaman_login(page: Page):
     page.title = "Login Poundfit System"
-    page.window_width = 400
-    page.window_height = 700
+    page.window.width = 360
+    page.window.height = 640
     page.clean()
+    page.vertical_alignment = MainAxisAlignment.CENTER
+    page.horizontal_alignment = CrossAxisAlignment.CENTER
 
-    user_val = TextField(label="Username", prefix_icon=Icons.PERSON)
-    pass_val = TextField(label="Password", prefix_icon=Icons.LOCK, password=True, can_reveal_password=True)
+    user_val = TextField(label="Username", prefix_icon=Icons.PERSON, width=300)
+    pass_val = TextField(label="Password", prefix_icon=Icons.LOCK, password=True, can_reveal_password=True, width=300)
     msg = Text("", color=Colors.RED)
 
     def login_klik(e):
@@ -571,21 +587,16 @@ def halaman_login(page: Page):
             page.update()
 
     page.add(
-        Container(
-            content=Column([
-                Icon(Icons.FITNESS_CENTER, size=80, color=Colors.PINK),
-                Text("POUNDFIT SYSTEM", size=24, weight="bold", color=Colors.PINK_800),
-                Divider(height=20, color="transparent"),
-                user_val,
-                pass_val,
-                ElevatedButton("LOGIN", on_click=login_klik, width=300, bgcolor=Colors.PINK, color=Colors.WHITE),
-                msg,
-                Text("Default: admin / admin", size=12, color=Colors.GREY)
-            ], alignment=MainAxisAlignment.CENTER, horizontal_alignment=CrossAxisAlignment.CENTER),
-            alignment=alignment.center,
-            expand=True,
-            padding=30
-        )
+        Column([
+            Icon(Icons.FITNESS_CENTER, size=60, color=Colors.PINK),
+            Text("POUNDFIT SYSTEM", size=20, weight="bold", color=Colors.PINK_800),
+            Divider(height=15, color="transparent"),
+            user_val,
+            pass_val,
+            ElevatedButton("LOGIN", on_click=login_klik, width=300, bgcolor=Colors.PINK, color=Colors.WHITE, height=45),
+            msg,
+            Text("Default: admin / admin", size=11, color=Colors.GREY)
+        ], alignment=MainAxisAlignment.CENTER, horizontal_alignment=CrossAxisAlignment.CENTER)
     )
 
 app(target=halaman_login)
