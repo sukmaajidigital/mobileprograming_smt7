@@ -16,8 +16,7 @@ CREATE TABLE user (
     username VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     hak_akses ENUM('admin', 'instruktur', 'pemilik') NOT NULL,
-    akses_terakhir DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_username (username)
+    akses_terakhir DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ========================================
@@ -31,10 +30,7 @@ CREATE TABLE peserta (
     no_hp VARCHAR(15) NOT NULL,
     pekerjaan VARCHAR(100),
     status_keanggotaan ENUM('Aktif', 'Nonaktif', 'Trial') NOT NULL DEFAULT 'Trial',
-    tanggal_daftar DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_nama_lengkap (nama_lengkap),
-    INDEX idx_no_hp (no_hp),
-    INDEX idx_status_keanggotaan (status_keanggotaan)
+    tanggal_daftar DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ========================================
@@ -69,12 +65,7 @@ CREATE TABLE pendaftaran (
     status_kehadiran ENUM('Hadir', 'Tidak Hadir', 'Izin', 'Belum Dimulai') NOT NULL DEFAULT 'Belum Dimulai',
     kode_pendaftaran VARCHAR(30) NOT NULL UNIQUE,
     FOREIGN KEY (id_peserta) REFERENCES peserta(id_peserta) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (id_kelas) REFERENCES kelas_poundfit(id_kelas) ON DELETE RESTRICT ON UPDATE CASCADE,
-    INDEX idx_kode_pendaftaran (kode_pendaftaran),
-    INDEX idx_tanggal_daftar (tanggal_daftar),
-    INDEX idx_id_peserta (id_peserta),
-    INDEX idx_id_kelas (id_kelas),
-    INDEX idx_status_pembayaran (status_pembayaran)
+    FOREIGN KEY (id_kelas) REFERENCES kelas_poundfit(id_kelas) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ========================================
