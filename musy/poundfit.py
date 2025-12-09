@@ -594,8 +594,8 @@ def halaman_login(page: Page):
             user_val,
             pass_val,
             ElevatedButton("LOGIN", on_click=login_klik, width=300, bgcolor=Colors.PINK, color=Colors.WHITE, height=45),
-            msg,
-            Text("Default: admin / admin", size=11, color=Colors.GREY)
+            msg
+            # Text("Default: admin / admin", size=11, color=Colors.GREY)
         ], alignment=MainAxisAlignment.CENTER, horizontal_alignment=CrossAxisAlignment.CENTER)
     )
 
