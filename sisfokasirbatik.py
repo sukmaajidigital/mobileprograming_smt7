@@ -25,7 +25,7 @@ def halaman_utama(page: Page, username, hak_akses):
     # pastikan bersih sebelum render halaman utama
     page.clean()
     page.title = "🛍️ Sistem Informasi Kasir Batik"
-    page.window.height = 700
+    page.window.height = 800
     page.window.width = 400
     page.padding = 20
 
@@ -551,13 +551,15 @@ def halaman_utama(page: Page, username, hak_akses):
             bgcolor=Colors.BLUE_300,
             center_title=True,
             actions=[
-                PopupMenuButton(
-                    items=[
-                        PopupMenuItem(text=f"{username}"),
-                        PopupMenuItem(),
-                        PopupMenuItem(text="↩️ Keluar", checked=False, on_click=logout),
-                    ]
-                ),
+                Row([
+                    Text(f"{username} ({hak_akses})", size=12, color=Colors.WHITE),
+                    IconButton(
+                        icon=Icons.LOGOUT,
+                        icon_color=Colors.WHITE,
+                        tooltip="Logout",
+                        on_click=logout
+                    ),
+                ], spacing=5),
             ],
         )
         page.add(appbar)
@@ -899,13 +901,15 @@ def halaman_utama(page: Page, username, hak_akses):
             bgcolor=Colors.BLUE_300,
             center_title=True,
             actions=[
-                PopupMenuButton(
-                    items=[
-                        PopupMenuItem(text=f"{username}"),
-                        PopupMenuItem(),
-                        PopupMenuItem(text="↩️ Keluar", checked=False, on_click=logout),
-                    ]
-                ),
+                Row([
+                    Text(f"{username} ({hak_akses})", size=12, color=Colors.WHITE),
+                    IconButton(
+                        icon=Icons.LOGOUT,
+                        icon_color=Colors.WHITE,
+                        tooltip="Logout",
+                        on_click=logout
+                    ),
+                ], spacing=5),
             ],
         )
         page.add(appbar)
@@ -1057,13 +1061,15 @@ def halaman_utama(page: Page, username, hak_akses):
                 bgcolor=Colors.BLUE_300,
                 center_title=True,
                 actions=[
-                    PopupMenuButton(
-                        items=[
-                            PopupMenuItem(text=f"{username}"),
-                            PopupMenuItem(),
-                            PopupMenuItem(text="↩️ Keluar", checked=False, on_click=logout),
-                        ]
-                    ),
+                    Row([
+                        Text(f"{username} ({hak_akses})", size=12, color=Colors.WHITE),
+                        IconButton(
+                            icon=Icons.LOGOUT,
+                            icon_color=Colors.WHITE,
+                            tooltip="Logout",
+                            on_click=logout
+                        ),
+                    ], spacing=5),
                 ],
             )
             page.add(appbar)
@@ -1165,13 +1171,15 @@ def halaman_utama(page: Page, username, hak_akses):
                 bgcolor=Colors.BLUE_300,
                 center_title=True,
                 actions=[
-                    PopupMenuButton(
-                        items=[
-                            PopupMenuItem(text=f"{username}"),
-                            PopupMenuItem(),
-                            PopupMenuItem(text="↩️ Keluar", checked=False, on_click=logout),
-                        ]
-                    ),
+                    Row([
+                        Text(f"{username} ({hak_akses})", size=12, color=Colors.WHITE),
+                        IconButton(
+                            icon=Icons.LOGOUT,
+                            icon_color=Colors.WHITE,
+                            tooltip="Logout",
+                            on_click=logout
+                        ),
+                    ], spacing=5),
                 ],
             )
             page.add(appbar)
@@ -1264,18 +1272,37 @@ def halaman_login(page: Page):
     notif_login = Text("", color=Colors.RED)
 
     def proses_login(val):
-        # Login sederhana tanpa tabel user, bisa dikembangkan lebih lanjut
-        # Default: username = admin, password = admin untuk hak_akses = kasir
-        if inputan_username.value == "admin" and inputan_password.value == "admin":
-            tampil_loading("Memuat halaman utama 🛍️")
-            Timer(1, lambda: halaman_utama(page, "admin", "kasir")).start()
-        else:
-            notif_login.value = "❌ Username atau password salah!"
-            page.update()
-            def bersihkan_notif():
-                notif_login.value = ""
+        # Login menggunakan database
+        try:
+            buka_koneksi = koneksi_database()
+            perintahSQL = buka_koneksi.cursor()
+            perintahSQL.execute("SELECT id_user, username, password, hak_akses FROM user WHERE username=%s AND password=%s",
+                        (inputan_username.value, inputan_password.value))
+            user = perintahSQL.fetchone()
+
+            # validasi jika user ada 
+            if user:
+                v_id_user, v_username, v_password, v_hak_akses = user
+                # update data akses terakhir user
+                perintahSQL.execute("UPDATE user SET akses_terakhir=%s WHERE id_user=%s", (datetime.now(), v_id_user))
+                buka_koneksi.commit()
+                perintahSQL.close()
+                buka_koneksi.close()
+                # setelah login sukses, panggil halaman utama
+                tampil_loading("Memuat halaman utama 🛍️")
+                Timer(1, lambda: halaman_utama(page, v_username, v_hak_akses)).start()
+            
+            # validasi jika user tidak ada
+            else:
+                notif_login.value = "❌ Username atau password salah!"
                 page.update()
-            Timer(2, bersihkan_notif).start()
+                def bersihkan_notif():
+                    notif_login.value = ""
+                    page.update()
+                Timer(2, bersihkan_notif).start()
+        except Exception as ex:
+            notif_login.value = f"❌ Error koneksi: {ex}"
+            page.update()
 
     tombol_login = ElevatedButton(
         "🔓 Login",
@@ -1298,8 +1325,10 @@ def halaman_login(page: Page):
                 tombol_login,
                 notif_login,
                 Divider(),
-                Text("Default Login:", size=12, color=Colors.GREY),
-                Text("Username: admin | Password: admin", size=10, color=Colors.GREY),
+                Text("Login User:", size=12, color=Colors.GREY),
+                Text("Username: admin | Password: 123", size=10, color=Colors.GREY),
+                Text("Username: kasir | Password: 123", size=10, color=Colors.GREY),
+                Text("Username: pemilik | Password: 123", size=10, color=Colors.GREY),
             ],
             alignment=MainAxisAlignment.CENTER,
             horizontal_alignment=CrossAxisAlignment.CENTER,

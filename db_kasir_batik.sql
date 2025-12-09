@@ -76,6 +76,18 @@ CREATE TABLE detail_transaksi (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ========================================
+-- Tabel User
+-- ========================================
+CREATE TABLE user (
+    id_user INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    hak_akses ENUM('admin', 'kasir', 'pemilik') NOT NULL,
+    akses_terakhir DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ========================================
 -- Insert Data Sample Produk
 -- ========================================
 INSERT INTO produk (kode_produk, nama_produk, jenis_batik, ukuran, harga, stok) VALUES
@@ -97,3 +109,11 @@ INSERT INTO pelanggan (nama_pelanggan, jenis_kelamin, no_hp, email, alamat, tang
 ('Dewi Kartika', 'Perempuan', '083456789012', 'dewi.kartika@email.com', 'Jl. Ahmad Yani No. 78, Surabaya', '2025-03-10 09:45:00'),
 ('Ahmad Rifai', 'Laki-laki', '084567890123', 'ahmad.rifai@email.com', 'Jl. Diponegoro No. 23, Yogyakarta', '2025-04-05 16:20:00'),
 ('Rina Wulandari', 'Perempuan', '085678901234', 'rina.wulandari@email.com', 'Jl. Thamrin No. 56, Semarang', '2025-05-18 11:00:00');
+
+-- ========================================
+-- Insert Data Sample User
+-- ========================================
+INSERT INTO user (username, password, hak_akses) VALUES
+('admin', '123', 'admin'),
+('kasir', '123', 'kasir'),
+('pemilik', '123', 'pemilik');
