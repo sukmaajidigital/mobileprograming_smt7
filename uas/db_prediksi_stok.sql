@@ -8,6 +8,15 @@
 CREATE DATABASE IF NOT EXISTS db_prediksi_stok;
 USE db_prediksi_stok;
 
+-- Pastikan import bersih dan urutan ID konsisten
+SET FOREIGN_KEY_CHECKS = 0;
+-- Hapus tabel jika sudah ada (hindari error TRUNCATE sebelum tabel dibuat)
+DROP TABLE IF EXISTS transaksi;
+DROP TABLE IF EXISTS barang;
+DROP TABLE IF EXISTS supplier;
+DROP TABLE IF EXISTS user;
+SET FOREIGN_KEY_CHECKS = 1;
+
 
 -- ==========================================
 -- 1. STRUKTUR TABEL
@@ -539,7 +548,7 @@ INSERT INTO transaksi (no_faktur, tanggal_transaksi, id_user, id_barang, id_supp
 ('INV-IN-049', '2025-12-15', 1, 51, 7, 'masuk', 28, 40000.00, 1120000.00, 'Transfer Bank', 'Pewarna remasol coklat'),
 ('INV-IN-050', '2025-12-15', 1, 125, 4, 'masuk', 18, 320000.00, 5760000.00, 'Transfer Bank', 'Kemeja premium exclusive'),
 ('INV-IN-051', '2025-12-15', 1, 174, 6, 'masuk', 20, 145000.00, 2900000.00, 'Tempo', 'Atasan bustier'),
-('INV-IN-052', '2025-12-15', 1, 201, 4, 'masuk', 15, 170000.00, 2550000.00, 'Transfer Bank', 'Kain batik tulis parang'),
+('INV-IN-052', '2025-12-15', 1, 186, 4, 'masuk', 15, 350000.00, 5250000.00, 'Transfer Bank', 'Kain batik tulis 2m Parang'),
 
 ('INV-OUT-113', '2025-12-15', 2, 125, NULL, 'keluar', 4, 550000.00, 2200000.00, 'QRIS', 'Premium gift'),
 ('INV-OUT-114', '2025-12-16', 2, 174, NULL, 'keluar', 5, 270000.00, 1350000.00, 'Transfer', 'Bustier modern');
