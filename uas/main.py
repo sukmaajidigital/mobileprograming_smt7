@@ -1,4 +1,4 @@
-# main.py
+# main.py (FINAL FIX - STRING ICONS & COLORS)
 
 import flet as ft
 from koneksi import fetch_data, execute_query
@@ -12,8 +12,6 @@ def get_list_barang():
 
 def delete_barang(id_barang):
     """Menghapus barang berdasarkan ID."""
-    # Pastikan data transaksi yang berelasi juga dihapus jika perlu,
-    # tapi untuk demo, kita fokus hapus barang saja.
     query = "DELETE FROM barang WHERE id_barang = %s"
     return execute_query(query, (id_barang,))
 
@@ -35,8 +33,7 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.theme_mode = ft.ThemeMode.LIGHT
 
-    # Dialog untuk Tambah/Edit Barang
-    # (Hanya Tambah Barang untuk menghemat ruang kode)
+    # Dialog untuk Tambah Barang
     
     txt_nama = ft.TextField(label="Nama Barang")
     txt_kode = ft.TextField(label="Kode SKU")
@@ -65,7 +62,7 @@ def main(page: ft.Page):
             load_data_table()
             page.update()
         except Exception as ex:
-            page.snack_bar = ft.SnackBar(ft.Text(f"Error Input: {ex}"), open=True, bgcolor=ft.colors.RED_600)
+            page.snack_bar = ft.SnackBar(ft.Text(f"Error Input: {ex}"), open=True, bgcolor="red")
             page.update()
 
     dlg_tambah = ft.AlertDialog(
@@ -104,23 +101,24 @@ def main(page: ft.Page):
         
         # Format hasil prediksi ke UI Flet
         if isinstance(hasil_analisis, str): # Jika error/data kurang
-             content = ft.Text(hasil_analisis, color=ft.colors.RED_600)
+             content = ft.Text(hasil_analisis, color="red")
         else:
-            color = ft.colors.GREEN_800
+            color_bg = "green"
             if hasil_analisis['Status'].startswith("Wajib"):
-                color = ft.colors.RED_800
+                color_bg = "red"
             elif hasil_analisis['Status'].startswith("Perlu"):
-                color = ft.colors.YELLOW_800
+                color_bg = "orange"
 
+            # FIX: Menggunakan string untuk nama icon (misal: "insights", "inventory")
             content = ft.Column([
-                ft.ListTile(leading=ft.Icon(ft.icons.INSIGHTS), title=ft.Text("Prediksi Penjualan Mingguan:"), 
+                ft.ListTile(leading=ft.Icon(name="insights"), title=ft.Text("Prediksi Penjualan Mingguan:"), 
                             subtitle=ft.Text(f"~{hasil_analisis['Prediksi_Mingguan']} {get_list_barang_dict().get(id_barang, {}).get('satuan_barang', 'Pcs')}")),
-                ft.ListTile(leading=ft.Icon(ft.icons.INVENTORY), title=ft.Text("Stok Tersisa Setelah Prediksi:"), 
+                ft.ListTile(leading=ft.Icon(name="inventory"), title=ft.Text("Stok Tersisa Setelah Prediksi:"), 
                             subtitle=ft.Text(str(hasil_analisis['Sisa_Stok_Setelah_Prediksi']))),
                 ft.Divider(),
                 ft.Container(
-                    ft.Text(f"STATUS INVENTORY: {hasil_analisis['Status']}", weight=ft.FontWeight.BOLD),
-                    padding=10, bgcolor=color, border_radius=5
+                    ft.Text(f"STATUS INVENTORY: {hasil_analisis['Status']}", weight=ft.FontWeight.BOLD, color="white"),
+                    padding=10, bgcolor=color_bg, border_radius=5
                 )
             ])
             
@@ -163,11 +161,11 @@ def main(page: ft.Page):
         rows = []
         for item in data:
             # Tentukan warna stok
-            color_stok = ft.colors.BLACK
+            color_stok = "black"
             if item['stok_saat_ini'] <= item['stok_minimum']:
-                color_stok = ft.colors.RED_700
+                color_stok = "red"
             elif item['stok_saat_ini'] < item['stok_minimum'] * 1.5:
-                color_stok = ft.colors.ORANGE_700
+                color_stok = "orange"
             
             rows.append(
                 ft.DataRow(
@@ -178,9 +176,9 @@ def main(page: ft.Page):
                         ft.DataCell(ft.Text(str(item['stok_minimum']))),
                         ft.DataCell(
                             ft.Row([
-                                ft.IconButton(ft.icons.ANALYTICS, tooltip="Cek Prediksi AI", on_click=lambda e, id=item['id_barang']: show_prediksi(e, id)),
-                                # ft.IconButton(ft.icons.EDIT, tooltip="Edit"), # Dihilangkan untuk simplifikasi
-                                ft.IconButton(ft.icons.DELETE, tooltip="Hapus", on_click=lambda e, id=item['id_barang']: (delete_barang(id), load_data_table())),
+                                # FIX: Icon diganti string "analytics" dan "delete"
+                                ft.IconButton(icon="analytics", tooltip="Cek Prediksi AI", on_click=lambda e, id=item['id_barang']: show_prediksi(e, id)),
+                                ft.IconButton(icon="delete", tooltip="Hapus", on_click=lambda e, id=item['id_barang']: (delete_barang(id), load_data_table())),
                             ], spacing=5)
                         ),
                     ]
@@ -202,7 +200,8 @@ def main(page: ft.Page):
         ft.Row([
             ft.ElevatedButton(
                 text="Tambah Barang (CRUD)",
-                icon=ft.icons.ADD,
+                # FIX: Icon diganti string "add"
+                icon="add",
                 on_click=lambda e: (setattr(dlg_tambah, 'open', True), page.update())
             ),
         ], alignment=ft.MainAxisAlignment.END),
