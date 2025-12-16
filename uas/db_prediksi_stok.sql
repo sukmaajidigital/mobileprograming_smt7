@@ -209,10 +209,11 @@ INSERT INTO barang (nama_barang, kode_sku, kategori, harga_beli, harga_jual, sto
 ('Benang Jahit Batik Warna', 'ALAT-037', 'Peralatan', 6000.00, 12000.00, 130, 26, 'Roll'),
 ('Jarum Jahit Batik Set', 'ALAT-038', 'Peralatan', 15000.00, 25000.00, 65, 13, 'Set'),
 ('Gunting Kain Premium', 'ALAT-039', 'Peralatan', 45000.00, 70000.00, 35, 7, 'Pcs'),
-('Meteran Kain 5 Meter', 'ALAT-040', 'Peralatan', 10000.00, 18000.00, 90, 18, 'Pcs');
+('Meteran Kain 5 Meter', 'ALAT-040', 'Peralatan', 10000.00, 18000.00, 90, 18, 'Pcs')
 
 -- === BAGIAN 2: 100 DATA PRODUK BATIK JADI ===
-INSERT INTO barang (nama_barang, kode_sku, kategori, harga_beli, harga_jual, stok_saat_ini, stok_minimum, satuan_barang) VALUES 
+-- (Lanjutan dari INSERT sebelumnya)
+, 
 -- Kemeja Batik Pria (30 jenis)
 ('Kemeja Batik Tulis Pola Parang', 'BAJU-001', 'Pakaian Jadi', 250000.00, 450000.00, 12, 5, 'Pcs'),
 ('Kemeja Batik Tulis Pola Kawung', 'BAJU-002', 'Pakaian Jadi', 260000.00, 460000.00, 15, 5, 'Pcs'),
@@ -326,6 +327,13 @@ INSERT INTO barang (nama_barang, kode_sku, kategori, harga_beli, harga_jual, sto
 -- ==========================================
 -- Isi Data Transaksi: Data Realistis untuk Prediksi AI
 -- Total: 300+ Transaksi (Masuk & Keluar) dari Oktober - Desember 2025
+-- 
+-- MAPPING ID_BARANG:
+-- Bahan Baku (1-100):
+--   Kain: 1-20, Malam: 21-35, Pewarna: 36-60, Peralatan: 61-100
+-- Produk Jadi (101-200):
+--   Kemeja: 101-130, Atasan: 131-155, Rok: 156-170, 
+--   Dress: 171-185, Kain Jadi & Aksesoris: 186-200
 -- ==========================================
 
 INSERT INTO transaksi (no_faktur, tanggal_transaksi, id_user, id_barang, id_supplier, jenis_transaksi, jumlah_barang, harga_satuan_saat_itu, total_harga, metode_pembayaran, keterangan_tambahan) VALUES 
