@@ -1,3 +1,14 @@
+-- Database: Sistem Informasi Kasir Batik
+-- Created: 2025-12-16
+
+-- Hapus database jika sudah ada (opsional)
+-- DROP DATABASE IF EXISTS db_kasir_batik;
+
+-- Buat database
+CREATE DATABASE IF NOT EXISTS db_prediksi_stok;
+USE db_prediksi_stok;
+
+
 -- ==========================================
 -- 1. STRUKTUR TABEL
 -- ==========================================
