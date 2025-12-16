@@ -84,7 +84,6 @@ CREATE TABLE user (
     password VARCHAR(100) NOT NULL,
     hak_akses ENUM('admin', 'kasir', 'pemilik') NOT NULL,
     akses_terakhir DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_username (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ========================================
